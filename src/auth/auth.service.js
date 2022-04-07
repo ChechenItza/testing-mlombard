@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt')
 const roles = require('../utils/roles')
 const { UnauthorizedError } = require('../errors')
 const { User } = require('../models')
-const tokenService = require('../token/token.service')
 
 async function login(user) {
   const dbUser = await User.findOne({ username: user.username })
@@ -11,22 +10,19 @@ async function login(user) {
   if (!match)
     throw new UnauthorizedError('password')
 
-  return tokenService.genTokenPair(dbUser._id.toString(), dbUser.role)
+  return dbUser
 }
 
 async function signup(user) {
-  user.password = await hashPass(user.password)
+  const saltRounds = 10
+  user.password = await bcrypt.hash(user.password, saltRounds)
+
   user.role = roles.user
 
   let newUser = new User(user)
   await newUser.save()
 
-  return tokenService.genTokenPair(newUser._id.toString(), newUser.role)
-}
-
-async function hashPass(password) {
-  const saltRounds = 10
-  return bcrypt.hash(password, saltRounds)
+  return newUser
 }
 
 module.exports = {

@@ -1,4 +1,10 @@
-require('dotenv').config()
+const path = require('path')
+process.env.NODE_ENV === 'production' ? 
+  require('dotenv').config() : 
+  require('dotenv').config({ 
+    path: path.resolve(process.cwd(), '.env.dev'),
+    debug: true
+  })
 
 const PORT = process.env.PORT ?? 3000
 

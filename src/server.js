@@ -6,7 +6,6 @@ const logger = require('./utils/logger');
 
 (async () => {
   try { 
-    console.log(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}`)
     await mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}`)
   } catch(err) {
     logger.error(err)

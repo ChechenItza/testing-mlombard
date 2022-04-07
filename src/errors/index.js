@@ -35,9 +35,19 @@ class UnauthorizedError extends HttpError {
   }
 }
 
+class InvalidError extends HttpError {
+  constructor(message) {
+    super(400, message)
+    Object.setPrototypeOf(this, InvalidError.prototype)
+
+    this.name = 'InvalidError'
+  }
+}
+
 module.exports = {
   HttpError,
   NotUniqueError,
   NotFoundError,
-  UnauthorizedError
+  UnauthorizedError,
+  InvalidError
 }
