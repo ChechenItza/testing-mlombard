@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const { v4: uuidv4 } = require('uuid')
 const tokenStorage = require('./token.storage')
 const { JWT_SECRET, ACCES_EXP, REFRESH_EXP } = require('../utils/config')
 
@@ -6,7 +7,7 @@ async function genTokenPair(userId, role) {
   const accessToken = await genToken(userId, role, ACCES_EXP)
   const refreshToken = await genToken(userId, role, REFRESH_EXP)
   
-  return new TokenPair(accessToken, refreshToken)
+  return { accessToken, refreshToken }
 }
 
 async function genToken(userId, role, exp) {

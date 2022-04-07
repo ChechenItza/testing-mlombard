@@ -3,6 +3,8 @@ require('dotenv').config()
 const PORT = process.env.PORT ?? 3000
 
 //mongo
+const MONGO_USER = process.env.MONGO_INITDB_ROOT_USERNAME ?? 'root'
+const MONGO_PASS = process.env.MONGO_INITDB_ROOT_PASSWORD ?? 'example'
 const MONGO_HOST = process.env.MONGO_HOST ?? 'localhost'
 const MONGO_PORT = process.env.MONGO_PORT ?? '27017'
 
@@ -21,6 +23,8 @@ const REFRESH_EXP = Number(process.env.REFRESH_EXP) ? Number(process.env.REFRESH
 
 module.exports = {
   PORT,
+  MONGO_USER,
+  MONGO_PASS,
   MONGO_HOST,
   MONGO_PORT,
   REDIS_HOST,

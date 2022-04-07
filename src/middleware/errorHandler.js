@@ -1,7 +1,7 @@
 const logger = require('../utils/logger')
 const { HttpError } = require('../errors') 
 
-function errorHandler(req, res, next) {
+function errorHandler(err, req, res, next) {
   logger.error(err)
 
   if (err instanceof HttpError) {

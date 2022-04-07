@@ -1,13 +1,13 @@
-const config = require('./utils/config')
+const { PORT, MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT } = require('./utils/config')
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const { PORT, MONGO_HOST, MONGO_PORT } = require('./utils/config')
-const logger = require('./utils/logger')
+const logger = require('./utils/logger');
 
 (async () => {
   try { 
-    await mongoose.connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}`)
+    console.log(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}`)
+    await mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}`)
   } catch(err) {
     logger.error(err)
     process.exit(1)

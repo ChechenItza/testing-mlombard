@@ -1,15 +1,15 @@
 const { createClient } = require('redis')
 const { UnauthorizedError } = require('../errors')
-const log = require('../utils/logger')
+const { REDIS_HOST, REDIS_PORT } = require('../utils/config')
+const logger = require('../utils/logger')
 
 let client
 (async () => {
-  client = createClient()
-  client.on('error', (err) => log.error('Redis Client Error', err))
+  client = createClient({ url: `redis://${REDIS_HOST}:${REDIS_PORT}` })
   try {
     await client.connect()
   } catch(err) {
-    log.error(err)
+    logger.error(err)
     process.exit(1)
   }
 })()

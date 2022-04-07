@@ -10,7 +10,7 @@ async function login(req, res, next) {
   res.json(tokenPair)
 }
 
-async function signup(req, res) {
+async function signup(req, res, next) {
   try {
     var tokenPair = await authService.signup(req.user)
   } catch(err) {

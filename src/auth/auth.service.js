@@ -5,7 +5,7 @@ const { User } = require('../models')
 const tokenService = require('../token/token.service')
 
 async function login(user) {
-  const dbUser = await User.find({ username: user.username })
+  const dbUser = await User.findOne({ username: user.username })
 
   const match = await bcrypt.compare(user.password, dbUser.password)
   if (!match)
