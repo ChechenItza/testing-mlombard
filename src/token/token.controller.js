@@ -1,6 +1,6 @@
 const tokenService = require('./token.service')
 
-function refresh(req, res, next) {
+async function refresh(req, res, next) {
   try {
     var tokenPair = await tokenService.refresh(req.payload.uuid)
   } catch(err) {

@@ -16,7 +16,7 @@ const userSchema = Joi.object({
 
 async function withValidUser(req, res, next) {
   try {
-    var user = await userSchema.validateAsync(req.body);
+    var user = await userSchema.validateAsync(req.body)
   } catch (err) { 
     return next(err)
   }
