@@ -11,7 +11,8 @@ const { changeRole } = require('./user/user.controller')
 const { 
   create: createBranch, 
   get: getBranch, 
-  remove: removeBranch 
+  remove: removeBranch,
+  change: changeBranch
 } = require('./branch/branch.controller')
 const roles = require('./utils/roles')
 
@@ -30,6 +31,7 @@ function registerRoutes(app) {
   app.post('/branch', authorize(), withValidBranch(), createBranch)
   app.get('/branch/:id', authorize(), getBranch)
   app.delete('/branch/:id', authorize(), removeBranch)
+  app.put('/branch/:id', authorize(), withValidBranch(), changeBranch)
 
   app.use(unknownEndpoint)
   app.use(errorHandler)

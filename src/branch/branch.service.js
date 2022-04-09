@@ -36,8 +36,25 @@ async function remove(branchId, userId, role) {
   return Branch.findOneAndDelete({ _id: branchId })
 }
 
+async function change(userId, branchId, newBranch, image, role) {
+  const oldBranch = await Branch.findOne({ _id: branchId })
+  if (!oldBranch)
+    throw new NotFoundError('branch')
+
+  if (oldBranch.ownerId !== userId && role !== roles.admin && role !== roles.moderator)
+    throw new UnauthorizedError('permission level')
+
+  newBranch.imageSrc = await saveImg(image.buffer, image.originalname) 
+  newBranch.thumbnailSrc = await genThumbnail(image.buffer, image.originalname)
+  await Branch.findByIdAndUpdate({ _id: branchId }, newBranch)
+
+  await deleteImg(oldBranch.imageSrc)
+  await deleteImg(oldBranch.thumbnailSrc)
+}
+
 module.exports = {
   create,
   get,
-  remove
+  remove,
+  change
 }

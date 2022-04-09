@@ -34,8 +34,20 @@ async function remove(req, res, next) {
   res.status(200).end()
 }
 
+async function change(req, res, next) {
+  try {
+    const userId = await tokenService.getUserId(req.payload.uuid)
+    await branchService.change(userId, req.params.id, req.body, req.file, req.payload.role)
+  } catch(err) {
+    return next(err)
+  }
+
+  res.status(200).end()
+}
+
 module.exports = {
   create,
   get,
-  remove
+  remove,
+  change
 }
