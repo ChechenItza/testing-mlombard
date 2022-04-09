@@ -1,7 +1,9 @@
 const fs = require('fs').promises
+const os = require('os')
 const path = require('path')
 const sharp = require('sharp')
 const { Branch } = require('../models')
+const { PORT } = require('../utils/config')
 
 async function create(userId, { name, address, work_hours_start, work_hours_end }, image) {
   const imageSrc = await saveImg(image.buffer, image.originalname) 
@@ -11,8 +13,8 @@ async function create(userId, { name, address, work_hours_start, work_hours_end 
     address,
     workHoursStart: work_hours_start,
     workHoursEnd: work_hours_end,
-    imageSrc,
-    thumbnailSrc,
+    imageSrc: `http://${os.hostname}:${PORT}/${imageSrc}`,
+    thumbnailSrc: `http://${os.hostname}:${PORT}/${thumbnailSrc}`,
     ownerId: userId
   })
 
