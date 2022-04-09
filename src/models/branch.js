@@ -3,10 +3,8 @@ const mongoose = require('mongoose')
 const branchSchema = new mongoose.Schema({
   name: String,
   address: String,
-  workHours: {
-    start: String,
-    end: String
-  },
+  workHoursStart: String,
+  workHoursEnd: String,
   imageSrc: String,
   thumbnailSrc: String,
   ownerId: String
