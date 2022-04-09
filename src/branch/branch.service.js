@@ -1,38 +1,50 @@
-const fs = require('fs').promises
-const os = require('os')
-const path = require('path')
-const sharp = require('sharp')
+const { NotFoundError, UnauthorizedError } = require('../errors')
 const { Branch } = require('../models')
-const { PORT } = require('../utils/config')
+const { saveImg, genThumbnail, deleteImg } = require('../image/image.service')
+const roles = require('../utils/roles')
 
 async function create(userId, { name, address, work_hours_start, work_hours_end }, image) {
   const imageSrc = await saveImg(image.buffer, image.originalname) 
-  const thumbnailSrc = await saveImg(await thumbnailFromImg(image.buffer), 'thumbnail_' + image.originalname)
+  const thumbnailSrc = await genThumbnail(image.buffer, image.originalname)
   const newBranch = new Branch({
     name,
     address,
     workHoursStart: work_hours_start,
     workHoursEnd: work_hours_end,
-    imageSrc: `http://${os.hostname}:${PORT}/${imageSrc}`,
-    thumbnailSrc: `http://${os.hostname}:${PORT}/${thumbnailSrc}`,
+    imageSrc,
+    thumbnailSrc,
     ownerId: userId
   })
 
   await newBranch.save()
 }
 
-function saveImg(image, filename) {
-  const relPath = `media/${Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(filename)}`
-  fs.writeFile(path.resolve(process.cwd(), relPath), image)
-  return relPath
+async function get(branchId, userId, role) {
+  const branch = await Branch.findOne({ _id: branchId })
+  if (!branch)
+    throw new NotFoundError('branch')
+
+  if (branch.ownerId !== userId && role !== roles.admin)
+    throw new UnauthorizedError('permission level')
+
+  return branch
 }
 
-function thumbnailFromImg(image) {
-  return sharp(image)
-    .resize(165, 165)
-    .toBuffer()
+async function remove(branchId, userId, role) {
+  const branch = await Branch.findOne({ _id: branchId })
+  if (!branch)
+    throw new NotFoundError('branch')
+
+  if (branch.ownerId !== userId && (role !== roles.admin || role !== roles.moderator))
+    throw new UnauthorizedError('permission level')
+
+  await deleteImg(branch.imageSrc)
+  await deleteImg(branch.thumbnailSrc)
+  return Branch.findOneAndDelete({ _id: branchId })
 }
 
 module.exports = {
-  create
+  create,
+  get,
+  remove
 }
