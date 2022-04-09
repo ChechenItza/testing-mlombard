@@ -3,19 +3,12 @@ const { Branch } = require('../models')
 const { saveImg, genThumbnail, deleteImg } = require('../image/image.service')
 const roles = require('../utils/roles')
 
-async function create(userId, { name, address, work_hours_start, work_hours_end }, image) {
-  const imageSrc = await saveImg(image.buffer, image.originalname) 
-  const thumbnailSrc = await genThumbnail(image.buffer, image.originalname)
-  const newBranch = new Branch({
-    name,
-    address,
-    workHoursStart: work_hours_start,
-    workHoursEnd: work_hours_end,
-    imageSrc,
-    thumbnailSrc,
-    ownerId: userId
-  })
+async function create(userId, branch, image) {
+  branch.imageSrc = await saveImg(image.buffer, image.originalname) 
+  branch.thumbnailSrc = await genThumbnail(image.buffer, image.originalname)
+  branch.ownerId = userId
 
+  const newBranch = new Branch(branch)
   await newBranch.save()
 }
 
@@ -35,7 +28,7 @@ async function remove(branchId, userId, role) {
   if (!branch)
     throw new NotFoundError('branch')
 
-  if (branch.ownerId !== userId && (role !== roles.admin || role !== roles.moderator))
+  if (branch.ownerId !== userId && role !== roles.admin && role !== roles.moderator)
     throw new UnauthorizedError('permission level')
 
   await deleteImg(branch.imageSrc)

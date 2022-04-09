@@ -30,10 +30,10 @@ const branchSchema = Joi.object({
     .max(128)
     .required(),
 
-  work_hours_start: Joi.string()
+  workHoursStart: Joi.string()
       .pattern(new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$'))
       .required(),
-  work_hours_end: Joi.string()
+  workHoursEnd: Joi.string()
       .pattern(new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$')) //TODO:  needs to be later than start
       .required(),
 })

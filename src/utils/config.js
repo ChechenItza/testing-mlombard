@@ -7,6 +7,7 @@ process.env.NODE_ENV === 'production' ?
   })
 
 const PORT = process.env.PORT ?? 3000
+const MEDIA_ROOT = process.env.MEDIA_ROOT ?? 'media'
 
 //mongo
 const MONGO_USER = process.env.MONGO_INITDB_ROOT_USERNAME ?? 'root'
@@ -37,5 +38,6 @@ module.exports = {
   REDIS_PORT,
   JWT_SECRET,
   ACCES_EXP,
-  REFRESH_EXP
+  REFRESH_EXP,
+  MEDIA_ROOT
 }
