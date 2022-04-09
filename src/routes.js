@@ -6,6 +6,7 @@ const {
   withValidBranch 
 } = require('./middleware')
 const { login, signup } = require('./auth/auth.controller')
+const { refresh } = require('./token/token.controller')
 const { changeRole } = require('./user/user.controller')
 const { 
   create: createBranch, 
@@ -18,6 +19,9 @@ function registerRoutes(app) {
   //auth
   app.post('/auth/login', withValidUser, login)
   app.post('/auth/signup', withValidUser, signup)
+
+  //token
+  app.post('/auth/refresh', authorize(), refresh)
 
   //users
   app.patch('/user/:id/role', authorize(roles.admin), changeRole)
