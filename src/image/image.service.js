@@ -2,13 +2,12 @@ const fs = require('fs').promises
 const os = require('os')
 const path = require('path')
 const sharp = require('sharp')
-const { PORT } = require('../utils/config')
+const { PORT, MEDIA_ROOT } = require('../utils/config')
 
 const thumbnailPrefix = 'thumbnail_'
-const rootFolder = 'media'
 
 async function saveImg(image, filename, prefix = '') {
-  const relPath = `${rootFolder}/${prefix}${Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(filename)}`
+  const relPath = `${MEDIA_ROOT}/${prefix}${Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(filename)}`
   await fs.writeFile(path.resolve(process.cwd(), relPath), image)
   return `http://${os.hostname}:${PORT}/${relPath}`
 }
@@ -29,7 +28,7 @@ async function deleteImg(imageSrc) {
 }
 
 function extractRelative(imageSrc) {
-  return imageSrc.substring(imageSrc.indexOf(rootFolder))
+  return imageSrc.substring(imageSrc.indexOf(MEDIA_ROOT))
 }
  
 module.exports = {

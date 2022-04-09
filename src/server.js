@@ -1,4 +1,4 @@
-const { PORT, MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT } = require('./utils/config')
+const { PORT, MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT, MEDIA_ROOT } = require('./utils/config')
 const path = require('path')
 const express = require('express')
 const app = express()
@@ -17,7 +17,7 @@ const logger = require('./utils/logger');
 })()
 
 app.use(express.json())
-app.use('/media', express.static('media'))
+app.use(`/${MEDIA_ROOT}`, express.static(MEDIA_ROOT))
 
 require('./routes')(app)
 
