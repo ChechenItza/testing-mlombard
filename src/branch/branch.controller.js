@@ -45,9 +45,20 @@ async function change(req, res, next) {
   res.status(200).end()
 }
 
+async function blockChanges(req, res, next) {
+  try {
+    await branchService.blockChanges(req.params.id, req.blockDate)
+  } catch(err) {
+    return next(err)
+  }
+
+  res.status(201).end()
+}
+
 module.exports = {
   create,
   get,
   remove,
-  change
+  change,
+  blockChanges
 }

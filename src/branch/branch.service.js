@@ -1,5 +1,5 @@
-const { NotFoundError, UnauthorizedError } = require('../errors')
-const { Branch } = require('../models')
+const { NotFoundError, UnauthorizedError, ForbiddenError } = require('../errors')
+const { Branch, EditBlock } = require('../models')
 const { saveImg, genThumbnail, deleteImg } = require('../image/image.service')
 const roles = require('../utils/roles')
 
@@ -44,6 +44,12 @@ async function change(userId, branchId, newBranch, image, role) {
   if (oldBranch.ownerId !== userId && role !== roles.admin && role !== roles.moderator)
     throw new UnauthorizedError('permission level')
 
+  if (role !== roles.admin) {
+    const block = await EditBlock.findOne({ branchId: oldBranch._id })
+    if (block)
+      throw new ForbiddenError(`this branch is blocked for changes until: ${block.until}`)
+  }
+
   newBranch.imageSrc = await saveImg(image.buffer, image.originalname) 
   newBranch.thumbnailSrc = await genThumbnail(image.buffer, image.originalname)
   await Branch.findByIdAndUpdate({ _id: branchId }, newBranch)
@@ -52,9 +58,18 @@ async function change(userId, branchId, newBranch, image, role) {
   await deleteImg(oldBranch.thumbnailSrc)
 }
 
+async function blockChanges(branchId, until) {
+  const editBlock = new EditBlock({ 
+    branchId,
+    until 
+  })
+  await editBlock.save()
+}
+
 module.exports = {
   create,
   get,
   remove,
-  change
+  change,
+  blockChanges
 }
