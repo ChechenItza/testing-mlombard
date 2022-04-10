@@ -7,7 +7,7 @@ function errorHandler(err, req, res, next) {
   if (err instanceof HttpError) {
     res.status(err.status).json({ error: err.message })
   } else if (err.name == 'ValidationError') {
-    res.status(403).json({ error: err.message })
+    res.status(400).json({ error: err.message })
   } else if (err.name == 'MulterError') {
     res.status(400).json({ error: err.message })
   } else {
