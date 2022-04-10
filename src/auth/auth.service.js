@@ -1,10 +1,12 @@
 const bcrypt = require('bcrypt')
 const roles = require('../utils/roles')
-const { UnauthorizedError } = require('../errors')
+const { UnauthorizedError, NotUniqueError } = require('../errors')
 const { User } = require('../models')
 
 async function login(user) {
   const dbUser = await User.findOne({ username: user.username })
+  if (!dbUser)
+    throw new UnauthorizedError('username')
 
   const match = await bcrypt.compare(user.password, dbUser.password)
   if (!match)
@@ -14,6 +16,10 @@ async function login(user) {
 }
 
 async function signup(user) {
+  const dbUser = await User.findOne({ username: user.username })
+  if (dbUser)
+    throw new NotUniqueError('username')
+
   const saltRounds = 10
   user.password = await bcrypt.hash(user.password, saltRounds)
 

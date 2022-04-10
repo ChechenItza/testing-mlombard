@@ -18,7 +18,7 @@ async function get(branchId, userId, role) {
     throw new NotFoundError('branch')
 
   if (branch.ownerId !== userId && role !== roles.admin)
-    throw new UnauthorizedError('permission level')
+    throw new ForbiddenError('access to this branch is not permitted')
 
   return branch
 }
@@ -29,7 +29,7 @@ async function remove(branchId, userId, role) {
     throw new NotFoundError('branch')
 
   if (branch.ownerId !== userId && role !== roles.admin && role !== roles.moderator)
-    throw new UnauthorizedError('permission level')
+    throw new ForbiddenError('access to this branch is not permitted')
 
   await deleteImg(branch.imageSrc)
   await deleteImg(branch.thumbnailSrc)
@@ -42,7 +42,7 @@ async function change(userId, branchId, newBranch, image, role) {
     throw new NotFoundError('branch')
 
   if (oldBranch.ownerId !== userId && role !== roles.admin && role !== roles.moderator)
-    throw new UnauthorizedError('permission level')
+    throw new ForbiddenError('access to this branch is not permitted')
 
   if (role !== roles.admin) {
     const block = await EditBlock.findOne({ branchId: oldBranch._id })

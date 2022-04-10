@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { UnauthorizedError } = require('../errors')
+const { UnauthorizedError, ForbiddenError } = require('../errors')
 const { JWT_SECRET } = require('../utils/config')
 
 function withPayload(req, res, next) {
@@ -26,7 +26,7 @@ function authorize(...roles) {
 
     (req, res, next) => {
       if (roles.length && !roles.includes(req.payload.role)) {
-        return next(new UnauthorizedError('token'))
+        return next(new ForbiddenError('access to this endpoint is not permitted'))
       }
 
       next()
