@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')
+const argon2 = require('argon2')
 const roles = require('../utils/roles')
 const { UnauthorizedError, NotUniqueError } = require('../errors')
 const { User } = require('../models')
@@ -8,7 +8,7 @@ async function login(user) {
   if (!dbUser)
     throw new UnauthorizedError('username')
 
-  const match = await bcrypt.compare(user.password, dbUser.password)
+  const match = await argon2.verify(dbUser.password, user.password)
   if (!match)
     throw new UnauthorizedError('password')
 
@@ -20,9 +20,7 @@ async function signup(user) {
   if (dbUser)
     throw new NotUniqueError('username')
 
-  const saltRounds = 10
-  user.password = await bcrypt.hash(user.password, saltRounds)
-
+  user.password = await argon2.hash(user.password)
   user.role = roles.user
 
   let newUser = new User(user)
