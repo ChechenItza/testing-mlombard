@@ -14,10 +14,12 @@ const MONGO_USER = process.env.MONGO_INITDB_ROOT_USERNAME ?? 'root'
 const MONGO_PASS = process.env.MONGO_INITDB_ROOT_PASSWORD ?? 'example'
 const MONGO_HOST = process.env.MONGO_HOST ?? 'localhost'
 const MONGO_PORT = process.env.MONGO_PORT ?? '27017'
+const MONGO_CONN_URL = `mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}`
 
 //redis
 const REDIS_HOST = process.env.REDIS_HOST ?? 'localhost'
 const REDIS_PORT = process.env.REDIS_PORT ?? '6379'
+const REDIS_CONN_URL = `redis://${REDIS_HOST}:${REDIS_PORT}`
 
 //JWT
 if (!process.env.JWT_SECRET) {
@@ -30,12 +32,8 @@ const REFRESH_EXP = Number(process.env.REFRESH_EXP) ? Number(process.env.REFRESH
 
 module.exports = {
   PORT,
-  MONGO_USER,
-  MONGO_PASS,
-  MONGO_HOST,
-  MONGO_PORT,
-  REDIS_HOST,
-  REDIS_PORT,
+  MONGO_CONN_URL,
+  REDIS_CONN_URL,
   JWT_SECRET,
   ACCES_EXP,
   REFRESH_EXP,
